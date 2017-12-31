@@ -7,6 +7,6 @@ import (
 )
 
 func main() {
-	fmt.Println(stringutil.Reverse("Comedme el nabo"))
+	fmt.Println(stringutil.Reverse("Comedme el nabo x2"))
 	fmt.Println("Fdo: " + stringutil.MyName)
 }
