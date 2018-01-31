@@ -38,15 +38,19 @@ func init() {
 	vip.SetEnvPrefix("SAMPLE")
 	vip.BindEnv()
 
+	pflag.Parse()
 	vip.BindPFlags(pflag.CommandLine)
 	rand.Seed(time.Now().UTC().UnixNano())
 
 }
 
 func main() {
+	log.Infof("Welcome to http server example!")
+
 	if vip.GetBool("verbose") {
 		vip.Set("log.level", "debug")
 	}
+
 	if vip.GetBool("quiet") {
 		vip.Set("log.level", "error")
 	}
@@ -55,6 +59,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed during config parsing : %#v", err)
 	}
+
 	logger := log.New()
 	logger.SetLevel(level)
 	formatter := &log.TextFormatter{
@@ -69,15 +74,16 @@ func main() {
 
 	serverContext, cancelFunc := context.WithCancel(baseContext)
 	server := server.Server{
-		Client: client,
-		Viper:  vip,
-		Ctx:    serverContext,
+		Viper: vip,
+		Ctx:   &serverContext,
 	}
 	defer cancelFunc()
 
 	server.SetLogger(logger)
 
 	if pflag.CommandLine.Arg(0) == "server" {
+		log.Infof("Starting server...")
+
 		exitChan, err := server.Start()
 		if err != nil {
 			logger.Errorf("error starting server: %#v", err)

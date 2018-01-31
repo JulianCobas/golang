@@ -1,9 +1,11 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -16,23 +18,19 @@ func (s *Server) Start() (chan bool, error) {
 		}
 	}
 
+	s.worker.start(s.Ctx)
+
 	s.router.HandleFunc("/books/{title}/page/{page}", func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		title := vars["title"]
 		page := vars["page"]
-
 		fmt.Fprintf(w, "You've requested the book: %s on page %s\n", title, page)
 	})
 
 	s.router.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
-		counterChan := s.worker.IncrementCounter()
 
-		s.logger.Infof("Channel waiting...")
-		result := <-counterChan
-		s.logger.Infof("Channel received...")
-
-		if result {
-			s.logger.Infof("Result counter increment: %v", result)
+		if s.worker.counter > 0 {
+			s.logger.Infof("Result counter increment: %d", s.worker.counter)
 			resp := []byte(strconv.Itoa(s.worker.counter))
 			w.WriteHeader(http.StatusOK)
 			w.Write(resp)
@@ -50,24 +48,27 @@ func (s *Server) Start() (chan bool, error) {
 	return s.exitChan, nil
 }
 
-//Init is mine
+//Init the server
 func (s *Server) Init() error {
 	s.logger.Infof("Initializing the server")
 	s.exitChan = make(chan bool)
 	s.initialized = true
 
-	r := mux.NewRouter()
+	s.router = mux.NewRouter()
 
 	s.worker = &Worker{
 		counterChan: make(chan bool),
 	}
+	s.worker.Period = 1000000000
 
 	s.worker.SetLogger(s.logger)
 	return nil
 }
 
-//IncrementCounter is mine
-func (s *Server) incrementCounter() {
-	s.worker.IncrementCounter()
-	s.worker.counterChan <- true
+//Shutdown the server
+func (s *Server) Shutdown(rootContext context.Context) {
+	s.logger.Infof("Shutting down the server")
+	ctx, cancel := context.WithTimeout(rootContext, 5*time.Second)
+	defer cancel()
+	s.Server.Shutdown(ctx)
 }
