@@ -12,4 +12,5 @@ func main() {
 
 func changeMe(z map[string]int) {
 	z["Todd"] = 44
+	fmt.Println(z)
 }
