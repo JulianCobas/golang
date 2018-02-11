@@ -5,10 +5,14 @@ import (
 )
 
 func main() {
-	// No number inside the brackets
+	// WITH VAR. No number inside the brackets. Has NIL VALUE.
+	var oneSlice []int
+	//SHORTHAND. Explicity included the data
 	mySlice := []int{1, 3, 5, 7, 9, 11}
+	// WITH MAKE
+	mySlice2 := make([]bool, 2, 4)
 
-	fmt.Println("%T\n", mySlice)
+	fmt.Println("%T - %T - %T\n", mySlice, mySlice2, oneSlice)
 	fmt.Println(mySlice)
 
 	/*
@@ -42,7 +46,7 @@ func main() {
 
 	/*
 		Slices support several more that make them richer than arrays.
-		One is the builtin append, which returns a slice containing
+		One is the built in append, which returns a slice containing
 		one or more new values.
 
 		Note that we need to accept a return value from append as we may get
@@ -80,20 +84,6 @@ func main() {
 	fmt.Println("dcl:", t)
 
 	/*
-		Slices can be composed into multi-dimensional data structures.
-		The length of the inner slices can vary, unlike with multi-dimensional arrays.
-	*/
-	twoD := make([][]int, 3)
-	for i := 0; i < 3; i++ {
-		innerLen := i + 1
-		twoD[i] = make([]int, innerLen)
-		for j := 0; j < innerLen; j++ {
-			twoD[i][j] = i + j
-		}
-	}
-	fmt.Println("2d: ", twoD)
-
-	/*
 		Playing with slice capacity
 
 		If we dont inform the capacity. First is one, then 2, then 4, then 8, ...
@@ -110,4 +100,43 @@ func main() {
 		coolSlice = append(coolSlice, i)
 		fmt.Println("Len: ", len(coolSlice), "Cap: ", cap(coolSlice), "Value: ", coolSlice[i])
 	}
+
+	/*
+		Slices can be composed into multi-dimensional data structures.
+		The length of the inner slices can vary, unlike with multi-dimensional arrays.
+	*/
+	twoD := make([][]int, 3)
+	for i := 0; i < 3; i++ {
+		innerLen := i + 1
+		twoD[i] = make([]int, innerLen)
+		for j := 0; j < innerLen; j++ {
+			twoD[i][j] = i + j
+		}
+	}
+	fmt.Println("2d: ", twoD)
+
+	// PLaying Multi dimensional slices
+
+	records := make([][]string, 0)
+
+	//student 1
+	student1 := make([]string, 4, 8)
+	student1[0] = "Foster"
+	student1[1] = "Natham"
+	student1[2] = "100.00"
+	student1[3] = "74.00"
+
+	//store the data
+	records = append(records, student1)
+
+	//student 2
+	student2 := make([]string, 4, 8)
+	student2[0] = "Gomez"
+	student2[1] = "Lisa"
+	student2[2] = "92.00"
+	student2[3] = "96.00"
+
+	records = append(records, student2)
+
+	fmt.Println(records)
 }
