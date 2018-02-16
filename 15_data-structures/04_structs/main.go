@@ -4,9 +4,9 @@ import "fmt"
 
 // Struct definition
 type Person struct {
-	first string
-	last  string
-	age   int
+	First string
+	Last  string
+	Age   int
 }
 
 type DoubleZero struct {
@@ -34,8 +34,8 @@ func main() {
 	}
 	p2 := Person{"Miss", "Moneypenny", 25}
 
-	fmt.Println(p1.first, p1.last, p1.age)
-	fmt.Println(p2.first, p2.last, p2.age)
+	fmt.Println(p1.First, p1.Last, p1.Age)
+	fmt.Println(p2.First, p2.Last, p2.Age)
 	fmt.Printf("%T %v \n", myAge, myAge)
 
 }
