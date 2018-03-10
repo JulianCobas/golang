@@ -70,7 +70,7 @@ func main() {
 	contextLogger = logger.WithFields(log.Fields{
 		"service": "sample",
 	})
-	contextLogger.Debugf("Starting sentinel...")
+	contextLogger.Debugf("Starting server...")
 
 	serverContext, cancelFunc := context.WithCancel(baseContext)
 	server := server.Server{
